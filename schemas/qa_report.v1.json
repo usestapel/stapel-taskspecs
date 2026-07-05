@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/qa_report.v1.json",
+  "title": "QAReport v1",
+  "description": "Per-criterion acceptance results for a task, produced by the verifier / QA pass. criterion_id ties each result back to a TaskSpec criterion (the criterion -> test -> QAReport -> passport trace). Forward-compatible envelope.",
+  "type": "object",
+  "required": ["schema_version", "task_id", "criteria_results"],
+  "properties": {
+    "schema_version": {"const": 1, "description": "Artifact schema major version."},
+    "task_id": {"type": "string", "minLength": 1},
+    "criteria_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["criterion_id", "status"],
+        "properties": {
+          "criterion_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Matches a TaskSpec criteria[].id."
+          },
+          "status": {
+            "type": "string",
+            "description": "Acceptance outcome for the criterion.",
+            "examples": ["pass", "fail", "skip"]
+          },
+          "screenshot_ref": {
+            "type": "string",
+            "description": "Reference to a captured screenshot artifact (optional)."
+          },
+          "repro_steps": {
+            "type": "string",
+            "description": "Reproduction steps for a failed criterion (optional)."
+          }
+        }
+      }
+    }
+  }
+}

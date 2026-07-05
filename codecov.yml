@@ -1,0 +1,25 @@
+# Coverage gate policy (docs/system-design.md §7.13.5):
+#
+# - `project` is the RATCHET (invariant I5): total coverage must not degrade
+#   silently. Target = current value, small tolerance for noise.
+# - `patch` is a FLOOR (80% of new code), not a ratchet against the project
+#   average.
+#
+# Tests and packaging scaffolding are excluded from coverage entirely.
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0.5%
+    patch:
+      default:
+        target: 80%
+
+ignore:
+  - "**/tests/**"
+  - "conftest.py"
+
+comment:
+  layout: "condensed_header, diff, files"
+  require_changes: true

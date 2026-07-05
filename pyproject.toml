@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stapel-taskspecs"
+version = "0.1.0"
+description = "Versioned JSON Schema + dataclass models for Stapel Studio pipeline artifacts (TaskSpec, TaskReport, SpecPatch, QAReport, EscalationQuestion, ReviewFinding)"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+keywords = ["stapel", "studio", "json-schema", "taskspec", "pipeline", "agents"]
+authors = [{ name = "Stapel" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+dependencies = [
+    "jsonschema>=4.18",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=4", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://stapel.dev"
+
+[tool.setuptools]
+package-dir = { "stapel_taskspecs" = "." }
+packages = ["stapel_taskspecs", "stapel_taskspecs.tests"]
+
+[tool.setuptools.package-data]
+stapel_taskspecs = ["py.typed", "schemas/*.json"]
+
+[tool.pytest.ini_options]
+addopts = "--tb=short -q --import-mode=importlib"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+# Ship the packaged tests for reuse, but exclude them from the coverage of the
+# library's own runtime code.
+omit = ["*/tests/*"]

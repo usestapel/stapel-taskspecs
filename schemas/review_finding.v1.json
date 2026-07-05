@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/review_finding.v1.json",
+  "title": "ReviewFinding v1",
+  "description": "One finding from a review pass. A finding carries a stable fingerprint (identity for the finding registry / oscillation detection) and a falsifiable claim. severity is open (blocker/note/...). Whether a blocker is admissible only with an attached red repro test is a gate rule enforced by the orchestrator, not by this schema. Forward-compatible envelope.",
+  "type": "object",
+  "required": ["schema_version", "fingerprint", "claim", "severity"],
+  "properties": {
+    "schema_version": {"const": 1, "description": "Artifact schema major version."},
+    "fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identity of the finding (category + location + gist), used by the finding registry to count recurrences and detect oscillation."
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The falsifiable assertion (what is wrong)."
+    },
+    "severity": {
+      "type": "string",
+      "description": "Finding severity. Open string; common values below.",
+      "examples": ["blocker", "note"]
+    },
+    "category": {
+      "type": "string",
+      "description": "Finding category (optional; a fingerprint component)."
+    },
+    "location": {
+      "type": "string",
+      "description": "Where the finding sits, e.g. file:line (optional; a fingerprint component)."
+    },
+    "repro_test_path": {
+      "type": "string",
+      "description": "Path to the red test reproducing the claim (optional at the schema level; may be a gate requirement for blockers)."
+    },
+    "repro_test": {
+      "type": "string",
+      "description": "Inline content of the repro test, when the reviewer attaches it rather than writing the file (optional)."
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Recurrence count for this fingerprint within the task (optional)."
+    },
+    "status": {
+      "type": "string",
+      "description": "Lifecycle of the finding (optional).",
+      "examples": ["open", "closed"]
+    }
+  }
+}

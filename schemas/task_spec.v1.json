@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/task_spec.v1.json",
+  "title": "TaskSpec v1",
+  "description": "A unit of work handed to the pipeline. Hard fields (id, type, status, budget, depends_on, spec_refs, criteria[].id) are parsed statically to drive the state machine, routing, budgets and context assembly; criterion TEXT is left semi-structured for a model to interpret behind stable IDs. Machine-owned envelope; forward-compatible (unknown fields are preserved, not rejected).",
+  "type": "object",
+  "required": ["schema_version", "id", "type", "goal", "criteria", "budget"],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "description": "Artifact schema major version."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable task identifier, e.g. 'T-001'."
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Task kind. Open string; common values below.",
+      "examples": ["feature", "bug", "refactor", "contract", "incident"]
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-sentence statement of intent."
+    },
+    "status": {
+      "type": "string",
+      "description": "FSM state. The canonical source of truth is the orchestrator DB; the projection carries a snapshot. Open string.",
+      "examples": ["DRAFT", "ARCHITECT", "RED_VERIFIED", "QUEUED", "CODING", "CONTROLS", "REVIEW", "ON_VERIFY", "ACCEPTED", "BLOCKED", "FAILED", "ESCALATED", "CANCELLED"]
+    },
+    "risk": {
+      "type": "array",
+      "description": "Risk classes attached to the task; steers model x harness routing. Open enum (values are host policy, not fixed here).",
+      "items": {"type": "string", "minLength": 1},
+      "examples": [["validation"], ["auth"], ["money", "concurrency"]]
+    },
+    "spec_refs": {
+      "type": "array",
+      "description": "References into the project spec used to assemble coder context.",
+      "items": {"type": "string"}
+    },
+    "depends_on": {
+      "type": "array",
+      "description": "IDs of tasks this one depends on (epic decomposition order).",
+      "items": {"type": "string"}
+    },
+    "criteria": {
+      "type": "array",
+      "description": "Acceptance criteria. Each id is machine identity for criterion -> test -> QAReport -> passport tracing; text is semi-structured Given/When/Then prose interpreted by the verifier.",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "out_of_scope": {
+      "type": "array",
+      "description": "Explicit non-goals.",
+      "items": {"type": "string"}
+    },
+    "budget": {
+      "type": "object",
+      "description": "Enforcement envelope. iterations is required; other limits are host-defined (e.g. tokens/tokens_m, wall_min/wall_minutes). Forward-compatible.",
+      "required": ["iterations"],
+      "properties": {
+        "iterations": {"type": "integer", "minimum": 0}
+      }
+    },
+    "body": {
+      "type": "string",
+      "description": "Human-readable prose body (the markdown below the front matter). Not machine-parsed."
+    }
+  }
+}

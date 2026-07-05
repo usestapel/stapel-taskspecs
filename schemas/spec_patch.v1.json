@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/spec_patch.v1.json",
+  "title": "SpecPatch v1",
+  "description": "A set of operations over the project spec, plus the text shown to the client for confirmation. Emitted at the human gate (spec.patched). Forward-compatible; operation shapes are open (op is a string, payload is free-form) so hosts can add operation kinds additively.",
+  "type": "object",
+  "required": ["schema_version", "operations"],
+  "properties": {
+    "schema_version": {"const": 1, "description": "Artifact schema major version."},
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["op"],
+        "properties": {
+          "op": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Operation kind. Open string; common values below.",
+            "examples": ["add_story", "update_status", "edit_section"]
+          },
+          "target": {
+            "type": "string",
+            "description": "What the operation applies to (story id, section ref, status key, ...)."
+          },
+          "payload": {
+            "description": "Operation-specific data. Free-form by design."
+          }
+        }
+      }
+    },
+    "confirmation_text": {
+      "type": "string",
+      "description": "Human-language description of the change for client confirmation at the gate."
+    }
+  }
+}

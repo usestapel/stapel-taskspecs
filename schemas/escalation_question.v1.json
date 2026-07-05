@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/escalation_question.v1.json",
+  "title": "EscalationQuestion v1",
+  "description": "A question raised to a human when the pipeline cannot proceed (contradictory requirements, unresolved ambiguity). Phrased in business language, optionally with answer options. Forward-compatible envelope.",
+  "type": "object",
+  "required": ["schema_version", "task_id", "question"],
+  "properties": {
+    "schema_version": {"const": 1, "description": "Artifact schema major version."},
+    "task_id": {"type": "string", "minLength": 1},
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The question in business-language phrasing."
+    },
+    "options": {
+      "type": "array",
+      "description": "Suggested answer options (optional; omit for open questions).",
+      "items": {"type": "string"}
+    }
+  }
+}

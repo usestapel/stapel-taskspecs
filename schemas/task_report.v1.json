@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/task_report.v1.json",
+  "title": "TaskReport v1",
+  "description": "The runner's report on one task attempt. status is a state claim, not a truth claim — acceptance is decided by control gates elsewhere. Carries the five-component usage split as a protocol condition. Forward-compatible envelope; the nested usage object is deliberately closed.",
+  "type": "object",
+  "required": ["schema_version", "task_id", "status", "usage"],
+  "properties": {
+    "schema_version": {"const": 1, "description": "Artifact schema major version."},
+    "task_id": {"type": "string", "minLength": 1},
+    "status": {
+      "type": "string",
+      "description": "Terminal status of the attempt. Open string; common values below.",
+      "examples": ["done", "blocked", "failed"]
+    },
+    "summary_business": {
+      "type": "string",
+      "description": "Result stated in business language (for the CTO / chat surface)."
+    },
+    "files_changed": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "controls": {
+      "type": "object",
+      "description": "Control-gate outcomes keyed by control name (lint/types/tests/...). Each value carries a pass/fail status and an optional log tail. Forward-compatible.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Control outcome.",
+            "examples": ["pass", "fail", "skip", "error"]
+          },
+          "log": {"type": "string"}
+        }
+      }
+    },
+    "commits": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "questions": {
+      "type": "array",
+      "description": "Business-language questions raised when status is blocked.",
+      "items": {"type": "string"}
+    },
+    "failure_type": {
+      "type": "string",
+      "description": "Failure taxonomy label when the attempt failed. Open string; the confirmed slice taxonomy is shown as examples, values are host policy.",
+      "examples": ["misread", "broke_other", "cheat", "harness", "flaky"]
+    },
+    "iterations": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of coder iterations spent on the attempt."
+    },
+    "usage": {
+      "$ref": "usage_split.v1.json",
+      "description": "Five-component token split for the attempt (aggregate across calls). Required: usage accounting is a protocol condition even for blocked/failed reports (report zeros, never omit the split)."
+    }
+  }
+}

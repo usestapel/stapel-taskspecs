@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.stapel.dev/taskspecs/usage_split.v1.json",
+  "title": "UsageSplit v1",
+  "description": "Token accounting for a single model call, split into exactly five components. Unlike the artifact envelopes (which are forward-compatible and tolerate unknown fields), this object is deliberately CLOSED: the five-component split is a protocol condition, not a convenience. A collapsed or partial split hides the economics of reasoning-class models (thinking tokens are billed as output yet often reported separately) and breaks per-role cost accounting.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cache_read", "cache_write", "fresh_input", "output", "thinking"],
+  "properties": {
+    "cache_read": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Prompt-side tokens served from the provider prefix cache."
+    },
+    "cache_write": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Prompt-side tokens written into the prefix cache this call."
+    },
+    "fresh_input": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Prompt-side tokens neither cached nor cache-writing (fresh input)."
+    },
+    "output": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Generated output tokens."
+    },
+    "thinking": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Reasoning tokens reported separately by the harness. Zero when the model folds them into output; a dedicated column keeps reasoning-class economics honest."
+    }
+  }
+}
