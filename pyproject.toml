@@ -15,8 +15,11 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Typing :: Typed",
 ]
 dependencies = [
@@ -28,14 +31,26 @@ dependencies = [
 dev = ["pytest>=8", "pytest-cov>=4", "ruff>=0.6"]
 
 [project.urls]
-Homepage = "https://stapel.dev"
+Homepage = "https://github.com/usestapel/stapel-taskspecs"
+Repository = "https://github.com/usestapel/stapel-taskspecs"
+Documentation = "https://github.com/usestapel/stapel-taskspecs#readme"
+Changelog = "https://github.com/usestapel/stapel-taskspecs/blob/main/CHANGELOG.md"
+Issues = "https://github.com/usestapel/stapel-taskspecs/issues"
 
 [tool.setuptools]
 package-dir = { "stapel_taskspecs" = "." }
-packages = ["stapel_taskspecs", "stapel_taskspecs.tests"]
+packages = ["stapel_taskspecs"]
 
 [tool.setuptools.package-data]
 stapel_taskspecs = ["py.typed", "schemas/*.json"]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# Single source for the git hooks and CI (they pass the same flags on the CLI).
+select = ["E", "F", "W"]
+ignore = ["E501"]
 
 [tool.pytest.ini_options]
 addopts = "--tb=short -q --import-mode=importlib"

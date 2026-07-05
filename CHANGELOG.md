@@ -8,6 +8,13 @@ This project uses pre-1.0 semver: **minor = breaking**, patch = compatible.
 
 Initial release. Schema library for Stapel Studio pipeline artifacts.
 
+### Packaging
+- Tests excluded from the built wheel/sdist (the `stapel_taskspecs.tests`
+  subpackage is no longer listed in `[tool.setuptools] packages`). Expanded
+  `[project.urls]`, completed the trove classifiers (Python 3.13, OS
+  Independent, `3 :: Only`) and added a `[tool.ruff]` lint section (single
+  source shared with the git hooks/CI).
+
 ### Added
 - **JSON Schema v1** (`schemas/`, Draft 2020-12) for the six pipeline
   artifacts — `task_spec`, `task_report`, `spec_patch`, `qa_report`,
